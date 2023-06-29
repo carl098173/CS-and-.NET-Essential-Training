@@ -1,0 +1,76 @@
+// program scope:
+// summarize the contents of a folder
+
+// initialize counters
+int totalFiles = 0;
+long bytesTotal = 0;
+int isXLSX = 0;
+long bytesXLSX = 0;
+int isDOCX = 0;
+long bytesDOCX = 0;
+int isPPTX = 0;
+long bytesPPTX = 0;
+
+// Get the path for the current directory
+string path = Directory.GetCurrentDirectory() + "/FileCollection";
+// Console.WriteLine($"Current directory is {path}");
+
+// creates list of all files to be searched
+List<string> thedirs = new List<string>(Directory.EnumerateFiles(path));
+
+// fills list with filenames
+foreach (string file in thedirs)
+{
+    totalFiles += 1;
+    long fileLength = 0;
+    // get file length
+    try
+    {
+        FileInfo fi = new FileInfo(file);
+        fileLength = fi.Length;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Exception {e}");
+    }
+    bytesTotal += fileLength;
+
+    if (file.Contains(".xlsx"))
+    {
+        isXLSX += 1;
+        bytesXLSX += fileLength;
+    }
+
+    else if (file.Contains(".docx"))
+    {
+        isDOCX += 1;
+        bytesDOCX += fileLength;
+    }
+
+    else if (file.Contains(".pptx"))
+    {
+        isPPTX += 1;
+        bytesPPTX += fileLength;
+    }
+}
+
+// create out file
+const string filename = "out.txt";
+if (File.Exists(filename)) File.Delete(filename);
+    using (StreamWriter sw = File.AppendText(filename))
+{
+    sw.WriteLine("~~~~ Results ~~~~");
+    sw.WriteLine($"Total Files: {totalFiles}");
+    sw.WriteLine($"Excel Count: {isXLSX}");
+    sw.WriteLine($"Word Count: {isDOCX}");
+    sw.WriteLine($"Powerpoint Count: {isPPTX}");
+    sw.WriteLine("----");
+    sw.WriteLine($"Total Size: {bytesTotal:n0}");
+    sw.WriteLine($"Excel Size: {bytesXLSX:n0}");
+    sw.WriteLine($"Word Size: {bytesDOCX:n0}");
+    sw.WriteLine($"Powerpoint Size: {bytesPPTX:n0}");
+
+}
+
+
+
